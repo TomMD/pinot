@@ -28,6 +28,7 @@ import com.linkedin.pinot.common.utils.ServiceStatus;
 import com.linkedin.pinot.controller.api.ControllerAdminApiApplication;
 import com.linkedin.pinot.controller.api.access.AccessControlFactory;
 import com.linkedin.pinot.controller.api.events.MetadataEventNotifierFactory;
+import com.linkedin.pinot.controller.api.storage.PinotFSFactory;
 import com.linkedin.pinot.controller.helix.SegmentStatusChecker;
 import com.linkedin.pinot.controller.helix.core.PinotHelixResourceManager;
 import com.linkedin.pinot.controller.helix.core.minion.PinotHelixTaskResourceManager;
@@ -63,6 +64,7 @@ public class ControllerStarter {
   private static final Long DATA_DIRECTORY_MISSING_VALUE = 1000000L;
   private static final Long DATA_DIRECTORY_EXCEPTION_VALUE = 1100000L;
   private static final String METADATA_EVENT_NOTIFIER_PREFIX = "metadata.event.notifier";
+  private static final String STORAGE_PREFIX = "storage";
 
   private final ControllerConf _config;
   private final ControllerAdminApiApplication _adminApp;
@@ -177,6 +179,8 @@ public class ControllerStarter {
       throw new RuntimeException("Caught exception while creating new AccessControlFactory instance", e);
     }
 
+    final PinotFSFactory pinotFSFactory = PinotFSFactory.loadFactory(_config.subset(STORAGE_PREFIX));
+
     final MetadataEventNotifierFactory metadataEventNotifierFactory =
         MetadataEventNotifierFactory.loadFactory(_config.subset(METADATA_EVENT_NOTIFIER_PREFIX));
 
@@ -198,6 +202,7 @@ public class ControllerStarter {
         bind(_executorService).to(Executor.class);
         bind(_controllerMetrics).to(ControllerMetrics.class);
         bind(accessControlFactory).to(AccessControlFactory.class);
+        bind(pinotFSFactory).to(PinotFSFactory.class);
         bind(metadataEventNotifierFactory).to(MetadataEventNotifierFactory.class);
       }
     });

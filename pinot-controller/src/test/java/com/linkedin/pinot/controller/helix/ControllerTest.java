@@ -58,7 +58,7 @@ public abstract class ControllerTest {
 
   private static final int DEFAULT_CONTROLLER_PORT = 8998;
   private static final String DEFAULT_DATA_DIR =
-      FileUtils.getTempDirectoryPath() + File.separator + "test-controller-" + System.currentTimeMillis();
+      FileUtils.getTempDirectoryPath() + "test-controller-" + System.currentTimeMillis();
 
   protected int _controllerPort;
   protected String _controllerBaseApiUrl;
@@ -100,6 +100,8 @@ public abstract class ControllerTest {
     config.setControllerPort(Integer.toString(DEFAULT_CONTROLLER_PORT));
     config.setDataDir(DEFAULT_DATA_DIR);
     config.setZkStr(ZkStarter.DEFAULT_ZK_STR);
+    config.setPinotStorageDir(DEFAULT_DATA_DIR);
+    config.setPinotFSFactoryClass("com.linkedin.pinot.controller.api.storage.LocalPinotFSFactory");
     return config;
   }
 
